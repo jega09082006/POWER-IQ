@@ -1,8 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8000/api';
-const POWER_SOCKET_URL = 'ws://localhost:8000/ws/power';
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL ||
+  (typeof window !== 'undefined' ? `${window.location.origin}/api` : 'http://localhost:8000/api');
+const BROWSER_ORIGIN = typeof window !== 'undefined' ? window.location.origin : '';
+const IS_SAME_ORIGIN_API =
+  API_BASE.startsWith('/') || Boolean(BROWSER_ORIGIN && API_BASE.startsWith(BROWSER_ORIGIN));
+const POWER_SOCKET_URL = IS_SAME_ORIGIN_API
+  ? null
+  : API_BASE.replace(/^http/, 'ws').replace(/\/api\/?$/, '/ws/power');
 
 const EMPTY_POWER_SOURCE = {
   solarKW: 0,
@@ -90,6 +97,11 @@ export const EnergyProvider = ({ children }) => {
     loadData();
 
     try {
+      if (!POWER_SOCKET_URL) {
+        return () => {
+          isMounted = false;
+        };
+      }
       socket = new WebSocket(POWER_SOCKET_URL);
       socket.onmessage = (event) => {
         if (!isMounted) return;
@@ -118,6 +130,12 @@ export const EnergyProvider = ({ children }) => {
       isMounted = false;
       socket?.close();
     };
+  }, []);
+
+  useEffect(() => {
+    if (POWER_SOCKET_URL) return undefined;
+    const refreshTimer = window.setInterval(loadData, 5000);
+    return () => window.clearInterval(refreshTimer);
   }, []);
 
   const reportActionError = (requestError, fallback) => {

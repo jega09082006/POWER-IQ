@@ -25,25 +25,27 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("PowerIQ Backend running on port 8000")
+    is_vercel = os.getenv("VERCEL") == "1"
+    print("PowerIQ Backend running on Vercel" if is_vercel else "PowerIQ Backend running on port 8000")
     init_db()
     seed_state(get_seed_payload())
     apply_power_cut_strategy()
     print("Database connected")
-    mqtt_client = connect_mqtt()
+    mqtt_client = None if is_vercel else connect_mqtt()
     app.state.mqtt_client = mqtt_client
-    if mqtt_client is None:
+    if mqtt_client is None and not is_vercel:
         print("MQTT broker unavailable; continuing without MQTT")
     print("Celery scheduler ready")
-    broadcaster = asyncio.create_task(power_broadcast_loop())
+    broadcaster = None if is_vercel else asyncio.create_task(power_broadcast_loop())
     try:
         yield
     finally:
-        broadcaster.cancel()
-        try:
-            await broadcaster
-        except asyncio.CancelledError:
-            pass
+        if broadcaster is not None:
+            broadcaster.cancel()
+            try:
+                await broadcaster
+            except asyncio.CancelledError:
+                pass
         shutdown_mqtt()
 
 

@@ -1,4 +1,36 @@
-# React + Vite
+# PowerIQ
+
+## Run the backend
+
+From the repository root, start the FastAPI backend with:
+
+```powershell
+python main.py
+```
+
+The API is available at http://localhost:8000, with interactive documentation
+at http://localhost:8000/docs.
+
+## Run the frontend
+
+```powershell
+npm run dev
+```
+
+## Deploy frontend and backend together on Vercel
+
+The repository includes `vercel.json` and `api/[...path].py`, so Vercel can
+serve the Vite frontend and FastAPI backend from the same deployment. Keep the
+Vercel install command as `npm install` and the build command as `npm run build`.
+The deployed API is available under `/api`.
+
+Vercel does not provide persistent WebSocket connections. The deployed
+frontend therefore refreshes API data over HTTP every five seconds; local
+development continues to use the WebSocket backend.
+
+---
+
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
