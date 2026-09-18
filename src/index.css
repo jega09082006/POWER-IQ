@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    font-size: 16px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  body {
+    background-color: #0f172a;
+    color: #f8fafc;
+    min-height: 100vh;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    padding-bottom: 5rem; /* Room for sticky bottom nav on mobile */
+  }
+
+  /* Universal minimum font size enforcement */
+  * {
+    font-size: inherit;
+  }
+  
+  h1 { font-size: 1.85rem; font-weight: 800; }
+  h2 { font-size: 1.5rem; font-weight: 700; }
+  h3 { font-size: 1.25rem; font-weight: 700; }
+  h4 { font-size: 1.1rem; font-weight: 600; }
+}
+
+/* Custom Large Toggle Styling */
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: #22c55e;
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #22c55e;
+}
+
+/* Color System Utilities */
+.status-good {
+  background-color: #15803d;
+  color: #ffffff;
+}
+.status-warning {
+  background-color: #b45309;
+  color: #ffffff;
+}
+.status-danger {
+  background-color: #b91c1c;
+  color: #ffffff;
+}
+
+/* Glass & Card Elevation */
+.factory-card {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  backdrop-filter: blur(8px);
+}
+
+/* Pulse Glows */
+.glow-green {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.35);
+}
+.glow-yellow {
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.35);
+}
+.glow-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.45);
+}
